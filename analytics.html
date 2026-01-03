@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>revan - Advanced Analytics</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <div class="header-nav">
+        <button class="back-btn" onclick="window.location.href='index.html'">← Back to Dashboard</button>
+        <h1>revan's Analytics</h1>
+      </div>
+    </header>
+    <!-- In the section-header div, ADD this button -->
+    <button class="btn-primary" onclick="analyticsApp.showReportMenu()">📊 Generate Reports</button>
+    <!-- Filters Section -->
+    <section class="card">
+      <h3>🔍 Filter Data</h3>
+      <div class="filters-grid">
+        <!-- Date Range Type -->
+        <div class="filter-group">
+          <label>Date Range Type</label>
+          <select id="filterDateType" onchange="analyticsApp.toggleDateOptions()">
+            <option value="thisMonth">This Month</option>
+            <option value="lastMonth">Last Month</option>
+            <option value="thisYear">This Year</option>
+            <option value="lastYear">Last Year</option>
+            <option value="specificMonth">Specific Month</option>
+            <option value="dateRange">Date Range</option>
+            <option value="allTime">All Time</option>
+          </select>
+        </div>
+        
+        <!-- Specific Month (shown when specificMonth is selected) -->
+        <div class="filter-group" id="specificMonthGroup" style="display: none;">
+          <label>Select Month</label>
+          <input type="month" id="filterSpecificMonth">
+        </div>
+        
+        <!-- Date Range (shown when dateRange is selected) -->
+        <div class="filter-group" id="dateRangeGroup" style="display: none;">
+          <label>From Date</label>
+          <input type="date" id="filterStartDate">
+        </div>
+        
+        <div class="filter-group" id="dateRangeGroupEnd" style="display: none;">
+          <label>To Date</label>
+          <input type="date" id="filterEndDate">
+        </div>
+        
+        <!-- Other Filters -->
+        <div class="filter-group">
+          <label>Service Type</label>
+          <select id="filterService">
+            <option value="">All Services</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label>Client</label>
+          <select id="filterClient">
+            <option value="">All Clients</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label>Status</label>
+          <select id="filterStatus">
+            <option value="">semua status yang ada di dalam data</option>
+            <option value="scheduled">Scheduled</option>
+            <option value="completed">Completed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+      </div>
+      <div class="quick-filters">
+        <select id="quickFilterDropdown" onchange="analyticsApp.handleQuickFilter(this.value)">
+          <option value="">Quick Filters</option>
+          <option value="today">hari ini</option>
+          <option value="yesterday">kemarin</option>
+          <option value="last7days">7 hari terakhir</option>
+          <option value="last30days">30 hari terakhir</option>
+          <option value="thisMonth">bulan ini
+            
+          </option>
+          <option value="lastMonth">bulan kemarin</option>
+        </select>
+      </div>
+      
+      
+      <!-- Main Filter Actions -->
+      <div class="filter-actions">
+        <button class="btn-primary" onclick="analyticsApp.applyFilters()">Apply Filters</button>
+        <button class="btn-cancel" onclick="analyticsApp.clearFilters()">Clear Filters</button>
+      </div>
+    </section>
+    
+    <!-- Summary Cards -->
+    <section class="card">
+      <h3>📈 Summary</h3>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-number" id="totalAppointments">0</div>
+          <div class="stat-label">Total Appointments</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="totalRevenue">KSh 0</div>
+          <div class="stat-label">Total Revenue</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="uniqueClients">0</div>
+          <div class="stat-label">Unique Clients</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="completionRate">0%</div>
+          <div class="stat-label">Completion Rate</div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Services Breakdown -->
+    <section class="card">
+      <h3>💎 Services Performance</h3>
+      <div id="servicesBreakdown" class="breakdown-list">
+        <div class="loading">Loading services breakdown...</div>
+      </div>
+    </section>
+    
+    <!-- Detailed Appointments List -->
+    <section class="card">
+      <div class="section-header">
+        <h3>📋 Appointment Management</h3>
+        <div class="appointment-tabs">
+          <button class="tab-btn active" onclick="analyticsApp.filterByStatus('')">All</button>
+          <button class="tab-btn" onclick="analyticsApp.filterByStatus('scheduled')">Scheduled</button>
+          <button class="tab-btn" onclick="analyticsApp.filterByStatus('completed')">Completed</button>
+          <button class="tab-btn" onclick="analyticsApp.filterByStatus('cancelled')">Cancelled</button>
+        </div>
+        <button class="btn-primary" onclick="analyticsApp.exportToCSV()">Export to CSV</button>
+      </div>
+      <!-- Add this after the tabs -->
+      <div class="bulk-actions-bar">
+        <input type="checkbox" id="selectAll" onchange="analyticsApp.toggleSelectAll(this.checked)">
+        <label for="selectAll">Select All</label>
+        
+        <select id="bulkAction" onchange="analyticsApp.applyBulkAction()">
+          <option value="">Bulk Actions</option>
+          <option value="completed">Mark as Completed</option>
+          <option value="cancelled">Cancel Selected</option>
+          <option value="scheduled">Mark as Scheduled</option>
+          <option value="delete">Delete Selected</option>
+        </select>
+        
+        <span id="selectedCount">0 selected</span>
+      </div>
+      <div id="detailedAppointments" class="appointments-list">
+        <div class="loading">Loading appointments...</div>
+      </div>
+    </section>
+    
+    <!-- Client Insights -->
+    <section class="card">
+      <h3>👥 Client Insights</h3>
+      <div id="clientInsights" class="insights-list">
+        <div class="loading">Loading client insights...</div>
+      </div>
+    </section>
+  </div>
+  
+  <script src="firebase-config.js"></script>
+  <script src="analytics.js"></script>
+</body>
+
+</html>

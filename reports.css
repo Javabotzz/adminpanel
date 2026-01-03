@@ -1,0 +1,148 @@
+/* Reports Table Styles */
+.reports-filters {
+  display: flex;
+  gap: 10px;
+  margin: 15px 0;
+  flex-wrap: wrap;
+}
+
+.reports-filters input,
+.reports-filters select {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.reports-table-container {
+  max-height: 60vh;
+  overflow: auto;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.reports-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+.reports-table th {
+  background: #667eea;
+  color: white;
+  padding: 12px;
+  text-align: left;
+  position: sticky;
+  top: 0;
+}
+
+.reports-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.reports-table tr:hover {
+  background: #f5f5f5;
+}
+
+/* Client Modal Styles */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.clients-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.client-card {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+}
+
+.client-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.client-info h4 {
+  margin: 0 0 5px 0;
+}
+
+.client-phone {
+  color: #666;
+  font-size: 0.9em;
+}
+
+.client-stats {
+  text-align: right;
+}
+
+.client-ltv {
+  display: block;
+  background: #667eea;
+  color: white;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 0.8em;
+  font-weight: bold;
+}
+
+.client-appointments {
+  display: block;
+  color: #666;
+  font-size: 0.8em;
+  margin-top: 3px;
+}
+
+.client-meta {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 8px;
+  font-size: 0.8em;
+  color: #666;
+}
+
+.client-services {
+  font-size: 0.9em;
+}
+
+.service-tag {
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 2px 6px;
+  border-radius: 8px;
+  font-size: 0.8em;
+  margin-right: 5px;
+}
+
+.table-container {
+  max-height: 500px;
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
+.data-table {
+  min-width: 100%;
+}
+
+/* Better scrolling performance */
+.data-table tbody {
+  display: block;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.data-table thead,
+.data-table tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}

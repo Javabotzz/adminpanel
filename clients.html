@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Client Management - revan website admin panel</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="client-management.css">
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1>👥 Client Management</h1>
+      <p>Revan website admin panel - Admixn</p>
+      <button class="back-btn" onclick="window.location.href='index.html'">← kembali ke beranda</button>
+    </header>
+    
+    <!-- Client Search and Filters -->
+    <section class="card">
+      <div class="search-header">
+        <!-- In clients.html -->
+        <div class="global-search">
+          <input type="text" id="clientSearch" placeholder="🔍 Search clients by name, phone..." onkeyup="clientManager.handleSearch(event)">
+          <button onclick="clientManager.clearSearch()">Clear</button>
+        </div <div class="quick-stats">
+        <span class="stat-pill" id="totalClients">Total: 0</span>
+        <span class="stat-pill" id="activeClients">Active: 0</span>
+        <span class="stat-pill" id="newThisMonth">New This Month: 0</span>
+      </div>
+  </div>
+  </section>
+  
+  <!-- View Controls -->
+  <section class="card">
+    <div class="section-header">
+      <h3>👥 Client Management</h3>
+      <div class="view-controls">
+        <button class="view-btn active" data-view="grid" onclick="clientManager.switchView('grid')">
+          ◼️ Grid
+        </button>
+        <button class="view-btn" data-view="list" onclick="clientManager.switchView('list')">
+          ☰ List
+        </button>
+        <button class="view-btn" data-view="table" onclick="clientManager.switchView('table')">
+          ═ Table
+        </button>
+      </div>
+    </div>
+    
+    <!-- Clients Container -->
+    <div id="clientsContainer" class="clients-grid-view">
+      <div class="loading">Loading clients...</div>
+    </div>
+  </section>
+  </div>
+  
+  <!-- Client Modal will be inserted here by JavaScript -->
+  
+  <script src="firebase-config.js"></script>
+  <script src="client-management.js"></script>
+  
+  <script>
+    // Initialize client manager when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      if (typeof clientManager !== 'undefined') {
+        clientManager.init();
+      }
+    });
+  </script>
+</body>
+
+</html>

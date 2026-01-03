@@ -1,0 +1,274 @@
+/* services-view.css - WITH POPUP MODAL */
+
+/* View Controls */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.view-controls {
+  display: flex;
+  gap: 5px;
+  background: #f8f9fa;
+  padding: 5px;
+  border-radius: 8px;
+}
+
+.view-btn {
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.view-btn.active {
+  background: #007bff;
+  color: white;
+}
+
+.view-btn:hover:not(.active) {
+  background: #e9ecef;
+}
+
+/* ========== GRID VIEW (Cards) - Stays in main page ========== */
+.services-grid-view {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.service-card {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.service-card h4 {
+  margin: 0 0 10px 0;
+  color: #333;
+  font-size: 18px;
+}
+
+.service-price {
+  font-weight: bold;
+  color: #28a745;
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.service-desc {
+  color: #666;
+  margin-bottom: 15px;
+  line-height: 1.4;
+}
+
+.service-meta {
+  display: flex;
+  justify-content: space-between;
+  color: #666;
+  font-size: 14px;
+}
+
+.service-category {
+  background: #e9ecef;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+/* ========== POPUP MODAL STYLES ========== */
+.services-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+
+.services-modal.active {
+  display: flex;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  width: 90%;
+  height: 80%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 25px;
+  border-bottom: 1px solid #e0e0e0;
+  background: #f8f9fa;
+  border-radius: 12px 12px 0 0;
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #333;
+}
+
+.modal-close {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.modal-body {
+  flex: 1;
+  padding: 0;
+  overflow: auto;
+}
+
+/* ========== LIST VIEW (In Modal) ========== */
+.services-list-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.service-list {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 25px;
+  border-bottom: 1px solid #e0e0e0;
+  transition: background-color 0.2s ease;
+}
+
+.service-list:hover {
+  background: #f8f9fa;
+}
+
+.service-list-info {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  flex: 1;
+}
+
+.service-list-info strong {
+  min-width: 200px;
+  color: #333;
+  font-size: 16px;
+}
+
+.service-list-meta {
+  display: flex;
+  gap: 25px;
+  color: #666;
+  font-size: 14px;
+}
+
+/* ========== TABLE VIEW (In Modal) ========== */
+.services-table-view {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  font-size: 14px;
+  height: 100%;
+}
+
+.services-table-view th {
+  background: #007bff;
+  color: white;
+  padding: 15px 20px;
+  text-align: left;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.services-table-view td {
+  padding: 15px 20px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.services-table-view tr:nth-child(even) {
+  background: #f8f9fa;
+}
+
+.services-table-view tr:hover {
+  background: #e3f2fd;
+}
+
+/* Common Elements */
+.service-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.btn-edit {
+  background: #ffc107;
+  color: #000;
+}
+
+.btn-delete {
+  background: #dc3545;
+  color: white;
+}
+
+.loading,
+.no-services {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+  font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .modal-content {
+    width: 95%;
+    height: 90%;
+  }
+  
+  .service-list-info {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  
+  .service-list-meta {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .services-table-view {
+    font-size: 12px;
+  }
+}

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kiki's - Schedule</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <div class="header-nav">
+        <button class="back-btn" onclick="window.location.href='index.html'">← Back to Dashboard</button>
+        <h1>📅 revan Schedule</h1>
+      </div>
+    </header>
+    
+    <!-- Calendar/Scheduling Section -->
+    <section class="card">
+      <div class="calendar-header">
+        <h3>My Schedule</h3>
+        <div class="view-options">
+          <button class="view-btn active" onclick="scheduleApp.setCalendarView('month')">Month</button>
+          <button class="view-btn" onclick="scheduleApp.setCalendarView('list')">List</button>
+          <button class="btn-primary" onclick="scheduleApp.showAddEventModal()">+ Add Appointment</button>
+        </div>
+      </div>
+      
+      <div id="calendarView">
+        <div class="loading">Loading calendar...</div>
+      </div>
+    </section>
+    
+    <!-- Upcoming Appointments -->
+    <section class="card">
+      <h3>⏰ Today's Appointments</h3>
+      <div id="todaysAppointments" class="appointments-list">
+        <div class="loading">Loading hari ini appointments...</div>
+      </div>
+    </section>
+  </div>
+  
+  <!-- Add Appointment Modal -->
+  <div class="modal" id="addEventModal">
+    <div class="modal-content">
+      <h3>➕ tambahkan Appointment baru</h3>
+      <form id="eventForm">
+        <div class="form-group">
+          <label>nama pelanggan</label>
+          <input type="text" id="clientName" required>
+        </div>
+        <div class="form-group">
+          <label>nomor telepon pelanggan</label>
+          <input type="tel" id="clientPhone" required>
+        </div>
+        <div class="form-group">
+          <label>Service</label>
+          <select id="eventService" required>
+            <option value="">Select Service</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Data</el>
+          <input type="date" id="eventDate" required>
+        </div>
+        <div class="form-group">
+          <label>waktu</label>
+          <input type="time" id="eventTime" required>
+        </div>
+        <div class="form-group">lab
+          <label>catatan tambahan (Optional)</label>
+          <textarea id="eventNotes" placeholder="Any special notes..."></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-cancel" onclick="scheduleApp.hideAddEventModal()">Cancel</button>
+          <button type="submit" class="btn-save">Save Appointment</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <script src="firebase-config.js"></script>
+  <script src="schedule.js"></script>
+</body>
+
+</html>

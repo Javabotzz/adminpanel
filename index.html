@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>revan aplikasi dasboard - Admin</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="reports.css">
+  <link rel="stylesheet" href="services-view.css">
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1>revan aplikasi dasboard</h1>
+      <p>admin dasboard </p>
+    </header>
+    
+    <section class="card">
+      <div class="search-header">
+        <div class="global-search">
+          <input type="text" id="globalSearch" placeholder="🔍 Search services, clients, appointments..." onkeyup="adminApp.handleGlobalSearch(event)">
+          <button onclick="adminApp.clearSearch()">Clear</button>
+        </div>
+        <div class="quick-stats">
+          <span class="stat-pill" id="todayCount">Today: 0</span>
+          <span class="stat-pill" id="pendingCount">Pending: 0</span>
+          <span class="stat-pill" id="revenueToday">Revenue: KSh 0</span>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Quick Actions -->
+    <section class="card">
+      <h3>🚀 pengaturan tambahan</h3>
+      <div class="actions-grid">
+        <button class="action-btn" onclick="window.location.href='schedule.html'">
+          <span class="btn-icon">📅</span>
+          <span class="btn-text">penjadwalan</span>
+        </button>
+        <button class="action-btn" onclick="showServiceForm()">
+          <span class="btn-icon">➕</span>
+          <span class="btn-text">Add Service</span>
+        </button>
+        <button class="action-btn" onclick="window.location.href='clients.html'">
+          <span class="btn-icon">👥</span>
+          <span class="btn-text">View Clients</span>
+        </button>
+        <button class="action-btn" onclick="adminApp.showReports()">
+          <span class="btn-icon">📊</span>
+          <span class="btn-text">lapor manage</span>
+        </button>
+        <button class="action-btn" onclick="window.location.href='analytics.html'">
+          <span class="btn-icon">📈</span>
+          <span class="btn-text">Advanced Analytics</span>
+        </button>
+      </div>
+    </section>
+    
+    <!-- Enhanced Dashboard -->
+    <section class="card">
+      <h3>📊 analytics hari ini</h3>
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-icon">📅</div>
+          <div class="kpi-content">
+            <div class="kpi-number" id="todaysAppointments">0</div>
+            <div class="kpi-label">Today's Appointments</div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon">⏳</div>
+          <div class="kpi-content">
+            <div class="kpi-number" id="pendingActions">0</div>
+            <div class="kpi-label">Pending Actions</div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon">💰</div>
+          <div class="kpi-content">
+            <div class="kpi-number" id="todaysRevenue">KSh 0</div>
+            <div class="kpi-label">Today's Revenue</div>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon">✅</div>
+          <div class="kpi-content">
+            <div class="kpi-number" id="completionRate">0%</div>
+            <div class="kpi-label">Completion Rate</div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Quick Activity Feed -->
+    <section class="card">
+      <h3>📝 Recent Activity</h3>
+      <div id="activityFeed" class="activity-feed">
+        <div class="loading">Loading recent activity...</div>
+      </div>
+    </section>
+    
+    <!-- Updated Services Section with View Controls -->
+    <section class="card">
+      <div class="section-header">
+        <h3>💎 Your Services</h3>
+        <div class="view-controls">
+          <button class="view-btn active" data-view="grid" onclick="servicesView.switchView('grid')">
+            ◼️ Grid
+          </button>
+          <button class="view-btn" data-view="list" onclick="servicesView.switchView('list')">
+            ☰ List
+          </button>
+          <button class="view-btn" data-view="table" onclick="servicesView.switchView('table')">
+            ═ Table
+          </button>
+        </div>
+      </div>
+      <div id="servicesList" class="services-grid-view">
+        <div class="loading">Loading services...</div>
+      </div>
+    </section>
+    
+    <!-- Quick Add Service Form (Hidden by default) -->
+    <section class="card" id="quickServiceForm" style="display: none;">
+      <h3>➕ Quick Add Service</h3>
+      <form id="serviceForm">
+        <input type="text" id="serviceName" placeholder="Service Name" required>
+        <textarea id="serviceDesc" placeholder="Description"></textarea>
+        <input type="number" id="serviceDuration" placeholder="Duration (minutes)" required>
+        <input type="number" id="servicePrice" placeholder="Price (KSh)" required>
+        <select id="serviceCategory" required>
+          <option value="">Select Category</option>
+          <option value="Massage">Massage</option>
+          <option value="Facial">Facial</option>
+          <option value="Therapy">Therapy</option>
+          <option value="Yoga">Yoga</option>
+          <option value="Nails">Nails</option>
+          <option value="Wellness">Wellness</option>
+          <option value="Beauty">Beauty</option>
+        </select>
+        <div class="form-actions">
+          <button type="submit">Add Service</button>
+          <button type="button" onclick="hideServiceForm()" class="btn-cancel">Cancel</button>
+        </div>
+      </form>
+    </section>
+  </div>
+  
+  <script src="firebase-config.js"></script>
+  <script src="admin-dashboard.js"></script>
+  <script src="reports.js"></script>
+  <script src="services-view.js"></script>
+  
+  <script>
+    // Initialize services view when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      if (typeof servicesView !== 'undefined') {
+        servicesView.init();
+      }
+    });
+    
+    // Service form functions
+    function showServiceForm() {
+      document.getElementById('quickServiceForm').style.display = 'block';
+    }
+    
+    function hideServiceForm() {
+      document.getElementById('quickServiceForm').style.display = 'none';
+      document.getElementById('serviceForm').reset();
+    }
+    
+    // Handle service form submission
+    document.getElementById('serviceForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const serviceData = {
+        name: document.getElementById('serviceName').value,
+        description: document.getElementById('serviceDesc').value,
+        duration: parseInt(document.getElementById('serviceDuration').value),
+        price: parseInt(document.getElementById('servicePrice').value),
+        category: document.getElementById('serviceCategory').value
+      };
+      
+      // Use the adminApp method to add service
+      if (typeof adminApp !== 'undefined' && adminApp.addService) {
+        adminApp.addService(serviceData);
+        hideServiceForm();
+      } else {
+        alert('Admin app not loaded yet. Please try again.');
+      }
+    });
+  </script>
+</body>
+
+</html>

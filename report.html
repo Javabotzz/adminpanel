@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>revan website admin panel - Reports</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="reports.css">
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <!-- Excel Export Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <h1>revan's website admin panel</h1>
+      <p>Reports & Analytics Dashboard</p>
+      <div class="header-actions">
+        <button class="btn-back" onclick="window.location.href='index.html'">← Back to Dashboard</button>
+      </div>
+    </header>
+    
+    <!-- Enhanced Reports Filtering System -->
+    <section class="card">
+      <h3>🔍 Filter Reports</h3>
+      
+      <!-- Advanced Filter Controls -->
+      <div class="filter-section">
+        <div class="filter-row">
+          <div class="filter-group">
+            <label>Date Range</label>
+            <select id="dateRange" onchange="reportsApp.handleDateRangeChange()">
+              <option value="today">Today</option>
+              <option value="yesterday">Yesterday</option>
+              <option value="week">This Week</option>
+              <option value="month" selected>This Month</option>
+              <option value="quarter">This Quarter</option>
+              <option value="year">This Year</option>
+              <option value="custom">Custom Range</option>
+              <option value="all">All Time (10 Years)</option>
+            </select>
+          </div>
+          
+          <div class="filter-group" id="customDateRange" style="display: none;">
+            <label>From</label>
+            <input type="date" id="startDate">
+            <label>To</label>
+            <input type="date" id="endDate">
+          </div>
+          
+          <div class="filter-group">
+            <label>Service Type</label>
+            <select id="serviceFilter">
+              <option value="all">All Services</option>
+              <option value="Massage">Massage</option>
+              <option value="Facial">Facial</option>
+              <option value="Therapy">Therapy</option>
+              <option value="Yoga">Yoga</option>
+              <option value="Nails">Nails</option>
+            </select>
+          </div>
+          
+          <div class="filter-group">
+            <label>Status</label>
+            <select id="statusFilter">
+              <option value="all">All Statuses</option>
+              <option value="completed">Completed</option>
+              <option value="pending">Pending</option>
+              <option value="cancelled">Cancelled</option>
+              <option value="no-show">No Show</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="filter-row">
+          <div class="filter-group">
+            <label>Client</label>
+            <select id="clientFilter">
+              <option value="all">All Clients</option>
+              <!-- Dynamically populated -->
+            </select>
+          </div>
+          
+          <div class="filter-group">
+            <label>Therapist</label>
+            <select id="therapistFilter">
+              <option value="all">All Therapists</option>
+              <!-- Dynamically populated -->
+            </select>
+          </div>
+          
+          <div class="filter-group">
+            <label>Sort By</label>
+            <select id="sortBy">
+              <option value="date-desc">Date (Newest First)</option>
+              <option value="date-asc">Date (Oldest First)</option>
+              <option value="price-desc">Price (High to Low)</option>
+              <option value="price-asc">Price (Low to High)</option>
+              <option value="client-asc">Client (A-Z)</option>
+            </select>
+          </div>
+          
+          <div class="filter-actions">
+            <button class="btn-primary" onclick="reportsApp.applyFilters()">Apply Filters</button>
+            <button class="btn-secondary" onclick="reportsApp.resetFilters()">Reset</button>
+            <button class="btn-export" onclick="reportsApp.exportToExcel()">📊 Export Excel</button>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Summary Statistics -->
+    <section class="card">
+      <h3>📈 Summary Statistics</h3>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="totalAppointments">0</div>
+          <div class="stat-label">Total Appointments</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="totalRevenue">KSh 0</div>
+          <div class="stat-label">Total Revenue</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="avgSessionPrice">KSh 0</div>
+          <div class="stat-label">Avg. Session Price</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="completionRate">0%</div>
+          <div class="stat-label">Completion Rate</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="topService">-</div>
+          <div class="stat-label">Most Popular Service</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="topClient">-</div>
+          <div class="stat-label">Top Client</div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Data Table -->
+    <section class="card">
+      <div class="table-header">
+        <h3>📋 Appointment Records</h3>
+        <div class="table-controls">
+          <span class="records-count">Showing <span id="shownRecords">0</span> of <span id="totalRecords">0</span> records</span>
+          <select id="pageSize" onchange="reportsApp.changePageSize()">
+            <option value="10">10 per page</option>
+            <option value="25" selected>25 per page</option>
+            <option value="50">50 per page</option>
+            <option value="100">100 per page</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="table-container">
+        <table id="reportsTable" class="data-table">
+          <thead>
+            <tr>
+              <th onclick="reportsApp.sortTable('bookingDate')">Booking Date 📥</th>
+              <th onclick="reportsApp.sortTable('date')">Scheduled Date 📅</th>
+              <th onclick="reportsApp.sortTable('client')">Client 👤</th>
+              <th onclick="reportsApp.sortTable('service')">Service 💎</th>
+              <th onclick="reportsApp.sortTable('duration')">Duration ⏱️</th>
+              <th onclick="reportsApp.sortTable('price')">Price 💰</th>
+              <th onclick="reportsApp.sortTable('therapist')">Therapist 🧘</th>
+              <th onclick="reportsApp.sortTable('status')">Status 🔄</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="reportsTableBody"></tbody>
+        </table>
+      </div>
+      
+      <!-- Pagination -->
+      <div class="pagination">
+        <button onclick="reportsApp.previousPage()" id="prevPage" disabled>← Previous</button>
+        <span class="page-info">Page <span id="currentPage">1</span> of <span id="totalPages">1</span></span>
+        <button onclick="reportsApp.nextPage()" id="nextPage" disabled>Next →</button>
+      </div>
+    </section>
+    
+    <!-- Quick Insights -->
+    <section class="card">
+      <h3>💡 Quick Insights</h3>
+      <div class="insights-grid">
+        <div class="insight-card">
+          <div class="insight-icon">📅</div>
+          <div class="insight-content">
+            <h4>Busiest Day</h4>
+            <p id="busiestDay">-</p>
+          </div>
+        </div>
+        <div class="insight-card">
+          <div class="insight-icon">💰</div>
+          <div class="insight-content">
+            <h4>Revenue Trend</h4>
+            <p id="revenueTrend">-</p>
+          </div>
+        </div>
+        <div class="insight-card">
+          <div class="insight-icon">👥</div>
+          <div class="insight-content">
+            <h4>Client Retention</h4>
+            <p id="clientRetention">-</p>
+          </div>
+        </div>
+        <div class="insight-card">
+          <div class="insight-icon">⏰</div>
+          <div class="insight-content">
+            <h4>Peak Hours</h4>
+            <p id="peakHours">-</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+  <script src="firebase-config.js"></script>
+  <script src="reports.js"></script>
+</body>
+
+</html>
